@@ -37,7 +37,11 @@ ref_timer.on('value',function(snapshot){
 var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
-    $("#score_table tbody").remove();
+    var table=document.getElementById('score_table');
+    for(var i = table.rows.length - 1; i > 0; i--)
+    {
+        table.deleteRow(i);
+    }
     var dict=snapshot.val();
     for(var key in dict){
         value=dict[key];

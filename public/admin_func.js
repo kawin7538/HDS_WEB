@@ -49,7 +49,11 @@ ref_timer.on('value',function(snapshot){
 var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
-    $("#score_table tbody").remove();
+    var table=document.getElementById('score_table');
+    for(var i = table.rows.length - 1; i > 0; i--)
+    {
+        table.deleteRow(i);
+    }
     var dict=snapshot.val();
     for(var key in dict){
         value=dict[key];
@@ -71,7 +75,7 @@ ref_team.on('value',function(snapshot){
             rows.insertCell(i).innerHTML=value[i-2];
         }
         rows.insertCell(15).innerHTML=value['sum'];
-        rows.insertCell(16).innerHTML="<button id=\'delete_"+value['name']+"\' onclick='delete_team("+value['name']+";\'>Delete</button>";
+        rows.insertCell(16).innerHTML="<button id=\'delete_"+value['name']+"\' onclick=\'delete_team(\""+value['name']+"\");\'>Delete</button>";
     }
 });
 
@@ -157,3 +161,8 @@ $(function(){
         }
     });
 });
+
+//function that delete team from competitions
+function delete_team(team_name){
+    ref_team.child(team_name).remove();
+}
