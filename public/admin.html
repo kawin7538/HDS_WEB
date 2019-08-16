@@ -22,9 +22,11 @@
     </head>
     <body>
         <center>
+            <!-- timer show session -->
             <div class="row">
                 <div class="col"><span id="timer">XX:XX:XX</span></div>
             </div>
+            <!-- timer setup session -->
             <div class="row">
                 <div class="col">
                     <h5>Timer Setup</h5>
@@ -41,7 +43,12 @@
             <button id="timer_start" onclick="timer_start();">Start</button>
             <button id="timer_pause">Pause</button>
             <button id="timer_stop">Stop</button>
-            
+            <!-- add user session  -->
+            <div class="row">
+                <div class="col">Add User Session</div>
+                <div class="col"><input id="team_name" type="text" placeholder="New Team Name" required></div>
+                <div class="col"><button id="add_team_button">Add new team</button></div>
+            </div>
         </center>
         <table class="table" id="score_table">
             <thead>
@@ -62,6 +69,7 @@
                     <th scope="col">11</th>
                     <th scope="col">12</th>
                     <th scope="col">sum</th>
+                    <th scope="col"></th>
                   </tr>
             </thead>
             <tbody>
