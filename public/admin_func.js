@@ -19,6 +19,23 @@ function zeroPad(nr,base){
     return len > 0? new Array(len).join('0')+nr : nr;
 }
 
+// function that sort dict 
+function sortProperties(obj)
+{
+  // convert object into array
+	var sortable=[];
+	for(var key in obj)
+		if(obj.hasOwnProperty(key))
+			sortable.push([key, obj[key]]); // each item is an array in format [key, value]
+	
+	// sort items by value
+	sortable.sort(function(a, b)
+	{
+	  return a[1]['sum']>b[1]['sum'] ? 1 : a[1]['sum']<b[1]['sum'] ? -1 : a[1]['last_time']>b[1]['last_time'] ? 1 : a[1]['last_time']<b[1]['last_time'] ? -1 : 0;
+	});
+	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+}
+
 // show time 
 var ref_timer=firebase.database().ref("timer");
 
@@ -32,9 +49,29 @@ ref_timer.on('value',function(snapshot){
 var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
+    $("#score_table tbody").remove();
     var dict=snapshot.val();
-    for(var key in value){
+    for(var key in dict){
         value=dict[key];
+        var temp=0;
+        for(var i=0;i<11;i++){
+            temp+=value[i+1];
+        }
+        dict[key]['sum']=temp;
+    }
+    dict=sortProperties(dict);
+    for(var row in dict){
+        var value=dict[row][1];
+        var table=document.getElementById('score_table');
+        var rows=table.insertRow();
+        rows.insertCell(0).innerHTML=value['effect'];
+        rows.insertCell(1).innerHTML=parseInt(row)+1;
+        rows.insertCell(2).innerHTML=value['name'];
+        for(var i=3;i<15;i++){
+            rows.insertCell(i).innerHTML=value[i-2];
+        }
+        rows.insertCell(15).innerHTML=value['sum'];
+        rows.insertCell(16).innerHTML="<button id=\'delete_"+value['name']+"\' onclick='delete_team("+value['name']+";\'>Delete</button>";
     }
 });
 
