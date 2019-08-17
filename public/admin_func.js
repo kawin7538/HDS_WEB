@@ -110,7 +110,8 @@ function timer_start(){
         firebase.database().ref("timer").update({
             hour:Math.floor(distance/3600),
             min:Math.floor((distance%3600)/60),
-            sec:Math.floor(distance%60)
+            sec:Math.floor(distance%60),
+            pressed:pressed
         });
         console.log(distance);
         hour=Math.floor(distance/3600);
@@ -159,6 +160,7 @@ $(function(){
             }
             temp['last_time']=0;
             firebase.database().ref("team/"+team_name).set(temp);
+            document.getElementById("team_name").value="";
         }
     });
 });
