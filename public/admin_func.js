@@ -7,6 +7,7 @@ var pressed=false;
 $(function(){
     $("#timer_pause,#timer_stop").hide();
     $("#lvl1used,#lvl2used,#lvl3used,#lvl4used").hide();
+    $("#stunUndo,#DestroyUndo,#ShieldUndo,#CompletedUndo").hide();
     firebase.database().ref("timer").set({
         hour:hour,
         min:min,
@@ -177,6 +178,12 @@ $(function(){
     $("#Completed").click(function(){
         var team_name=$("#Completed_group").val();
         var quest=$("#Completed_quest").val();
+        //Collect old data
+        var old_data={};
+        ref_team.once('value',function(snap){
+            old_data=snap.val()[team_name];
+        });
+        //Save new data to firebase
         var temp={};
         temp[quest]=1;
         ref_timer.on('value',function(snapshot){
@@ -184,7 +191,17 @@ $(function(){
             temp['last_time']=3600*snapshot['hour']+60*snapshot['min']+snapshot['sec'];
         });
         ref_team.child(team_name).update(temp);
+        //Reset select and input
         $("#Completed_group")[0].selectedIndex = 0;
         $("#Completed_quest").val('');
+        //Show undo button, function it and hide in 3 seconds
+        $("#CompletedUndo").show();
+        $("#CompletedUndo").click(function(){
+            ref_team.child(team_name).update(old_data);
+            //Text after undo (To Be Continued)
+        });
+        setTimeout(function(){
+            $("#CompletedUndo").hide();
+        },3000);
     });
 });
