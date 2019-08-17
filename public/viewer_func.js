@@ -16,7 +16,7 @@ function sortProperties(obj)
 	// sort items by value
 	sortable.sort(function(a, b)
 	{
-	  return a[1]['sum']>b[1]['sum'] ? 1 : a[1]['sum']<b[1]['sum'] ? -1 : a[1]['last_time']>b[1]['last_time'] ? 1 : a[1]['last_time']<b[1]['last_time'] ? -1 : 0;
+	  return a[1]['sum']>b[1]['sum'] ? -1 : a[1]['sum']<b[1]['sum'] ? 1 : a[1]['last_time']>b[1]['last_time'] ? -1 : a[1]['last_time']<b[1]['last_time'] ? 1 : 0;
 	});
 	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }
@@ -46,7 +46,7 @@ ref_team.on('value',function(snapshot){
     for(var key in dict){
         value=dict[key];
         var temp=0;
-        for(var i=0;i<11;i++){
+        for(var i=0;i<12;i++){
             temp+=value[i+1];
         }
         dict[key]['sum']=temp;
@@ -57,6 +57,10 @@ ref_team.on('value',function(snapshot){
         var table=document.getElementById('score_table');
         var rows=table.insertRow();
         rows.insertCell(0).innerHTML=value['effect'];
+        if(value['punished_time']>0 && value['effect']!=0){
+            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
+            rows.cells[0].innerHTML+='('+value['punished_time']+')';
+        }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
         for(var i=3;i<15;i++){
