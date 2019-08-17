@@ -57,6 +57,10 @@ ref_team.on('value',function(snapshot){
         var table=document.getElementById('score_table');
         var rows=table.insertRow();
         rows.insertCell(0).innerHTML=value['effect'];
+        if(value['punished_time']>0 && value['effect']!=0){
+            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
+            rows.cells[0].innerHTML+='('+value['punished_time']+')';
+        }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
         for(var i=3;i<15;i++){

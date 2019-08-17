@@ -1,5 +1,5 @@
 // variable
-var hour = 0;
+var hour = 2;
 var min = 0;
 var sec = 0;
 var pressed=false;
@@ -51,7 +51,6 @@ ref_timer.on('value',function(snapshot){
 var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
-    $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").empty().append("<option value = ''>Select Group</option>");
     var table=document.getElementById('score_table');
     for(var i = table.rows.length - 1; i > 0; i--)
     {
@@ -65,7 +64,6 @@ ref_team.on('value',function(snapshot){
             temp+=value[i+1];
         }
         dict[key]['sum']=temp;
-        $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").append($("<option></option>").attr("value",key).text(key));
     }
     dict=sortProperties(dict);
     for(var row in dict){
@@ -73,6 +71,10 @@ ref_team.on('value',function(snapshot){
         var table=document.getElementById('score_table');
         var rows=table.insertRow();
         rows.insertCell(0).innerHTML=value['effect'];
+        if(value['punished_time']>0 && value['effect']!=0){
+            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
+            rows.cells[0].innerHTML+='('+value['punished_time']+')';
+        }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
         for(var i=3;i<15;i++){
@@ -80,6 +82,36 @@ ref_team.on('value',function(snapshot){
         }
         rows.insertCell(15).innerHTML=value['sum'];
         rows.insertCell(16).innerHTML="<button id=\'delete_"+value['name']+"\' onclick=\'delete_team(\""+value['name']+"\");\'>Delete</button>";
+    }
+    ref_team.once('value',function(snap555){
+        snap555=snap555.val();
+        setTimeout(function(){
+            for(var key in snap555){
+                if(snap555[key]['effect']!=0){
+                    if(snap555[key]['punished_time']<=0){
+                        ref_team.child(snap555[key]['name']).update({
+                            effect:0
+                        });
+                    }
+                    else{
+                        ref_team.child(snap555[key]['name']).update({
+                            punished_time:snap555[key]['punished_time']-1
+                        });
+                    }
+                }
+            }
+        },1000);
+    });
+});
+
+// show all names in dropdown
+ref_team_name=firebase.database().ref("team_name");
+
+ref_team_name.on('value',function(snapshot){
+    $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").empty().append("<option value = ''>Select Group</option>");
+    var dict=snapshot.val();
+    for(var key in dict){
+        $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").append($("<option></option>").attr("value",key).text(key));
     }
 });
 
@@ -162,7 +194,11 @@ $(function(){
                 temp[i]=0;
             }
             temp['last_time']=0;
+            temp['punished_time']=0;
             firebase.database().ref("team/"+team_name).set(temp);
+            firebase.database().ref("team_name/"+team_name).set({
+                name:team_name
+            });
             document.getElementById("team_name").value="";
         }
     });
@@ -171,6 +207,7 @@ $(function(){
 //function that delete team from competitions
 function delete_team(team_name){
     ref_team.child(team_name).remove();
+    ref_team_name.child(team_name).remove();
 }
 
 // function that send save completed mission to firebase
@@ -202,6 +239,35 @@ $(function(){
         });
         setTimeout(function(){
             $("#CompletedUndo").hide();
+        },3000);
+    });
+});
+
+// Function that save shield to group
+$(function(){
+    $("#Shield").click(function(){
+        var team_name=$("#Shield_group").val();
+        var duration=$("#Shield_effect").val();
+        //Collect old data
+        var old_data={};
+        ref_team.once('value',function(snap){
+            old_data=snap.val()[team_name];
+        });
+        //Push shield to group
+        var temp={};
+        temp['effect']=3;
+        temp['punished_time']=parseInt(duration)*60;
+        ref_team.child(team_name).update(temp);
+        $("#Shield_group")[0].selectedIndex=0;
+        $("#Shield_effect")[0].selectedIndex=0;
+        //Show undo button, function it and hide in 3 seconds
+        $("#ShieldUndo").show();
+        $("#ShieldUndo").click(function(){
+            ref_team.child(team_name).update(old_data);
+            //Text after undo (To Be Continued)
+        });
+        setTimeout(function(){
+            $("#ShieldUndo").hide();
         },3000);
     });
 });
