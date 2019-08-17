@@ -32,7 +32,7 @@ function sortProperties(obj)
 	// sort items by value
 	sortable.sort(function(a, b)
 	{
-	  return a[1]['sum']>b[1]['sum'] ? 1 : a[1]['sum']<b[1]['sum'] ? -1 : a[1]['last_time']>b[1]['last_time'] ? 1 : a[1]['last_time']<b[1]['last_time'] ? -1 : 0;
+	  return a[1]['sum']>b[1]['sum'] ? -1 : a[1]['sum']<b[1]['sum'] ? 1 : a[1]['last_time']>b[1]['last_time'] ? -1 : a[1]['last_time']<b[1]['last_time'] ? 1 : 0;
 	});
 	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }
@@ -50,6 +50,7 @@ ref_timer.on('value',function(snapshot){
 var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
+    $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").empty().append("<option value = ''>Select Group</option>");
     var table=document.getElementById('score_table');
     for(var i = table.rows.length - 1; i > 0; i--)
     {
@@ -59,10 +60,11 @@ ref_team.on('value',function(snapshot){
     for(var key in dict){
         value=dict[key];
         var temp=0;
-        for(var i=0;i<11;i++){
+        for(var i=0;i<12;i++){
             temp+=value[i+1];
         }
         dict[key]['sum']=temp;
+        $("#Stun_group,#Destroy_group,#Shield_group,#Completed_group").append($("<option></option>").attr("value",key).text(key));
     }
     dict=sortProperties(dict);
     for(var row in dict){
@@ -169,3 +171,20 @@ $(function(){
 function delete_team(team_name){
     ref_team.child(team_name).remove();
 }
+
+// function that send save completed mission to firebase
+$(function(){
+    $("#Completed").click(function(){
+        var team_name=$("#Completed_group").val();
+        var quest=$("#Completed_quest").val();
+        var temp={};
+        temp[quest]=1;
+        ref_timer.on('value',function(snapshot){
+            snapshot=snapshot.val();
+            temp['last_time']=3600*snapshot['hour']+60*snapshot['min']+snapshot['sec'];
+        });
+        ref_team.child(team_name).update(temp);
+        $("#Completed_group")[0].selectedIndex = 0;
+        $("#Completed_quest").val('');
+    });
+});

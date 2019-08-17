@@ -16,7 +16,7 @@ function sortProperties(obj)
 	// sort items by value
 	sortable.sort(function(a, b)
 	{
-	  return a[1]['sum']>b[1]['sum'] ? 1 : a[1]['sum']<b[1]['sum'] ? -1 : a[1]['last_time']>b[1]['last_time'] ? 1 : a[1]['last_time']<b[1]['last_time'] ? -1 : 0;
+	  return a[1]['sum']>b[1]['sum'] ? -1 : a[1]['sum']<b[1]['sum'] ? 1 : a[1]['last_time']>b[1]['last_time'] ? -1 : a[1]['last_time']<b[1]['last_time'] ? 1 : 0;
 	});
 	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }
