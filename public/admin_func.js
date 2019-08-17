@@ -6,6 +6,7 @@ var pressed=false;
 // initial loading
 $(function(){
     $("#timer_pause,#timer_stop").hide();
+    $("#lvl1used,#lvl2used,#lvl3used,#lvl4used").hide();
     firebase.database().ref("timer").set({
         hour:hour,
         min:min,

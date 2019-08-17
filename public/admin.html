@@ -23,34 +23,132 @@
     </head>
     <body>
         <center>
+
             <!-- timer show session -->
             <div class="row">
-                <div class="col"><span id="timer">XX:XX:XX</span></div>
-            </div>
-            <!-- timer setup session -->
-            <div class="row">
+                <div class="col"><h1 id="timer">XX:XX:XX</h1></div>
                 <div class="col">
-                    <h5>Timer Setup</h5>
+                    <b>Card remaining</b><br>
+                    <b>Level 1:</b> <span id="statusLvl1">XX</span>, <b>Level 2:</b> <span id="statusLvl2">XX</span><br>
+                    <b>Level 3:</b> <span id="statusLvl3">XX</span>, <b>Level 4:</b> <span id="statusLvl4">XX</span>
                 </div>
+            </div>
+
+            <div class="row">
+                
+                <!-- timer setup session -->
                 <div class="col">
-                    <input id="hour" type="number" min="0" max="59" maxlength="2" size="2" placeholder="HH" required> : 
-                    <input id="min" type="number" min="0" max="59" maxlength="2" size="2" placeholder="MM" required> : 
+                    <h6>Timer Setup</h6>
+                    
+                    <!-- Field -->
+                    <input id="hour" type="number" min="0" max="99" maxlength="2" size="2" placeholder="HH"> : 
+                    <input id="min" type="number" min="0" max="59" maxlength="2" size="2" placeholder="MM"> : 
                     <input id="sec" type="number" min="0" max="59" maxlength="2" size="2" placeholder="SS" required>
+                    <button id="timer_save" onclick="save_timer();">Save settings</button><br>
+                    
+                    <!-- Controller -->
+                    <button id="timer_start" onclick="timer_start();">Start</button>
+                    <button id="timer_pause" onclick="timer_pause();">Pause</button>
+                    <button id="timer_stop">Stop</button> 
                 </div>
+                <!-- add user session  -->
+                <div class = "col">
+                    <h6>Add User Session</h6>
+                    <input id="team_name" type="text" placeholder="New Team Name" required><br>
+                    <button id="add_team_button">Add new team</button>
+                </div>
+                
+                <!-- card: all & used -->
                 <div class="col">
-                    <button id="timer_save" onclick="save_timer();">Save setting</button>
+                    <b id="CardHead"> Card Initialization </b><button id="card">Set</button><br>
+                    Level 1
+                    <input id="lvl1max" type="number" min="0" max="99" size="2">
+                    <input id="lvl1used" type="number" min="0" max="99" size="2">
+                    Level 2 
+                    <input id="lvl2max"type="number" min="0" max="99" size="2">
+                    <input id="lvl2used" type="number" min="0" max="99" size="2"><br>
+                    Level 3
+                    <input id="lvl3max" type="number" min="0" max="99" size="2">
+                    <input id="lvl3used" type="number" min="0" max="99" size="2"> 
+                    Level 4
+                    <input id="lvl4max" type="number" min="0" max="99" size="2">
+                    <input id="lvl4used" type="number" min="0" max="99" size="2"><br>
+                </div>
+            </div><br>
+
+            <div class="row">
+
+                <!-- Stun: group & level -->
+                <div class="col">
+                    <h6>Stun</h6>
+                    Group:
+                    <select id = "Stun_group">
+                        <option value = "">Select Group</option>
+                    </select><br>
+                    Effect:
+                    <select id = "Stun_effect">
+                        <option value = "">Select Effect</option>
+                        <option value = "20">Level 1</option>
+                        <option value = "40">Level 2</option>
+                        <option value = "60">Level 3</option>
+                        <option value = "90">Level 4</option>
+                    </select><br>
+                    <button id = "stun">Use</button>
+                    <button id = "stunUndo">Undo</button>
+                </div>
+
+                <!-- Destroy: group, level, & quest -->
+                <div class="col">
+                    <h6>Destroy</h6>
+                    Group:
+                    <select id = "Destroy_group">
+                        <option value = "">Select Group</option>
+                    </select><br>
+                    Effect:
+                    <select id = "Destroy_effect">
+                        <option value = "">Select Effect</option>
+                        <option value = "1">Level 1</option>
+                        <option value = "2">Level 2</option>
+                        <option value = "3">Level 3</option>
+                        <option value = "4">Level 4</option>
+                    </select><br>
+                    <button id = "Destroy">Use</button>
+                    <button id = "DestroyUndo">Undo</button>
+                </div>
+
+                <!-- Shield: group & level -->
+                <div class="col">
+                        <h6>Shield</h6>
+                        Group:
+                        <select id = "Shield_group">
+                            <option value = "">Select Group</option>
+                        </select><br>
+                        Quest No:
+                        <select id = "Shield_effect">
+                            <option value = "">Select Effect</option>
+                            <option value = "1">Level 1</option>
+                            <option value = "2">Level 2</option>
+                            <option value = "3">Level 3</option>
+                            <option value = "5">Level 4</option>
+                        </select><br>
+                        <button id = "Shield">Use</button>
+                        <button id = "ShieldUndo">Undo</button>
+                    </div>
+                
+                <!-- Completed: group & quest -->
+                <div class="col">
+                    <h6>Completed</h6>
+                    Group:
+                    <select id = "Completed_group">
+                        <option value = "">Select Group</option>
+                    </select><br>
+                    Quest No:
+                    <input id = "Completed_quest" placeholder = "Quest" min = "1" max = "12" type = "number"><br>
+                    <button id = "Completed">Accept</button>
+                    <button id = "CompletedUndo">Undo</button>
                 </div>
             </div>
-            <button id="timer_start" onclick="timer_start();">Start</button>
-            <button id="timer_pause">Pause</button>
-            <button id="timer_stop">Stop</button>
-            <!-- add user session  -->
-            <div class="row">
-                <div class="col">Add User Session</div>
-                <div class="col"><input id="team_name" type="text" placeholder="New Team Name" required></div>
-                <div class="col"><button id="add_team_button">Add new team</button></div>
-            </div>
-        </center>
+        </center><br>
         <table class="table" id="score_table">
             <thead>
                 <tr>
@@ -69,23 +167,21 @@
                     <th scope="col">10</th>
                     <th scope="col">11</th>
                     <th scope="col">12</th>
-                    <th scope="col">sum</th>
+                    <th scope="col">total</th>
                     <th scope="col"></th>
                   </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>ตรงนี้จะมีการใส่รายละเอียด จาก firebase โดยเพิ่ม tr และ td ตอนเริ่มต้นหน้านี้</td>
-                    <td>อย่าเปลี่ยน id ของตารางนี้นะสาสสสสส 555</td>
-                    <td>ที่เหลือ ถ้าอยากดีไซน์อะไร เรื่องของมึงเลยจ้า 555</td>
+                    <td>กำลังโหลดอยู่</td>
+                    <td>รอแปปนึงนะพี่จ๋า</td>
+                    <td>เดี๋ยวก็มาแล้วนะจ๊ะ</td>
                 </tr>
             </tbody>
         </table>
-        <div>
-                ตรงนี้จะมีการใส่รายละเอียด จาก firebase โดยเพิ่ม tr และ td ตอนเริ่มต้นหน้านี้<br>
-                อย่าเปลี่ยน id ของตารางนี้นะสาสสสสส 555<br>
-                ที่เหลือ ถ้าอยากดีไซน์อะไร เรื่องของมึงเลยจ้า 555<br>
-            ส่วนของการ์ด กูยังมองไม่ค่อยเห็นภาพ เลยไม่รู้ว่าต้องเป็นยังไง
-        </div>
+        <center>
+            Copyright © 2019, Kawin Chinpong & Kittapat Ratanaphupha<br>
+            Using for HDS PCCMS freshmen <b>friendly</b> orientation camp '62 only
+        </center>
     </body>
 </html>
