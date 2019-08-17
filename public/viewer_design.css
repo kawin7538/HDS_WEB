@@ -2,7 +2,56 @@ body{
     background-color: black;
     font-family: "Bai Jamjuree", sans-serif;
     color: #FFF;
+	margin: 10px;
+}
+#logo{
+	position: relative;
+	margin: 5% auto auto 5%;
+	width: 200px;
 }
 #score_table{
-    color: #FFF;
+	color: #FFF;
+	font-size: 22px;
+	line-height: 0.8em;
+	text-align: center;
+	text-transform: uppercase;
 }
+#timer{
+	position: relative;
+	margin: 0.4vw;
+	text-align: center;
+	font-size: 8vw;
+}
+#notes{
+	position: relative;
+	font-size: 18px;
+	text-align: center;
+	margin: auto;
+	
+}
+#footer{
+	color: #9F9F9F;
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+	left: 0px;
+	padding: 15px;
+	background-color: #272727;
+	font-size: 12px;
+}
+.disable-selection {
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer */
+   -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+}
+
+@media only screen and (max-width: 992px){
+	#notes{
+		font-size: 12px;
+	}
+	#timer{
+		font-size: 14vw;
+	}
+} 

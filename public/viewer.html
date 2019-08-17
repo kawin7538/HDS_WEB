@@ -24,18 +24,21 @@
 
         <script src="viewer_func.js"></script>
 
-        <link rel="stylesheet" href="viewer_design.css"></link>
+		<link rel="stylesheet" href="viewer_design.css"></link>
 
     </head>
-    <body>
-        <div>
-            <div align="left">
-                <img id="logo" src="Assets/Logo.png" alt="HDS'62 Logo" width="10%">
+    <body class="disable-selection">
+        <div id="title" class="row">
+            <div class="col-lg-3" id="toppest">
+                <a href="https://hds.kmutt.space/62"><img id="logo" src="Assets/Logo.png" alt="HDS'62 Logo"></a>
             </div>
-            <div align="center">
+            <div class="col-lg-6" id = "displayTime">
                 <h1 id="timer">XX:XX:XX</h1>
             </div>
-        </div>
+			<div class="col-lg-3" id = "notes">
+				<b>หมายเหตุ</b> ฐานแต่ละฐานจะเรียงตามเข็มนาฬิกา <br>โดยเริ่มจากทางด้านขวาของเวที
+			</div>
+        </div><br>
         <table class="table" id="score_table">
             <thead>
                 <tr>
@@ -58,9 +61,9 @@
                   </tr>
             </thead>
         </table>
-        <center>
-                Copyright © 2019, Kawin Chinpong & Kittapat Ratanaphupha<br>
-                Using for HDS PCCMS freshmen <b>friendly</b> orientation camp '62 only
-        </center>
+		<div id="footer">
+				© Copyright 2019, Kawin Chinpong & Kittapat Ratanaphupha - All Rights Reserved<br>
+				Using for HDS PCCMS freshmen <b>friendly</b> orientation camp '62 only
+		</div>
     </body>
 </html>
