@@ -46,7 +46,7 @@ ref_team.on('value',function(snapshot){
     for(var key in dict){
         value=dict[key];
         var temp=0;
-        for(var i=0;i<11;i++){
+        for(var i=0;i<12;i++){
             temp+=value[i+1];
         }
         dict[key]['sum']=temp;
