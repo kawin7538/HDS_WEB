@@ -63,6 +63,9 @@ body{
 .Normal_background{
     background-color:None;
 }
+.Stun_background{
+    background-color:green;
+}
 
 @media only screen and (max-width: 992px){
 	#notes{

@@ -27,10 +27,10 @@ var ref_timer=firebase.database().ref("timer");
 ref_timer.on('value',function(snapshot){
     // console.log(snapshot.val());
     var value=snapshot.val();
-    if(3600*value['hour']+60*value['min']+value['sec']-1<0 && value['pressed']){
+    if(value['distance']-1<0 ){
         alert("timer_stop");
     }
-    document.getElementById("timer").innerText=zeroPad(value['hour'],10)+" : "+zeroPad(value['min'],10)+" : "+zeroPad(value['sec'],10);
+    document.getElementById("timer").innerText=zeroPad(Math.floor(value['distance']/3600),10)+" : "+zeroPad(Math.floor((value['distance']%3600)/60),10)+" : "+zeroPad(Math.floor(value['distance']%60),10);
 });
 
 // show team table
@@ -57,16 +57,9 @@ ref_team.on('value',function(snapshot){
     dict=sortProperties(dict);
     for(var row in dict){
         var value=dict[row][1];
-        var table=document.getElementById('score_table');
+        // var table=document.getElementById('score_table');
         var rows=table.insertRow();
         rows.insertCell(0).innerHTML="";
-        if(value['punished_time']>0 && value['effect']!=0 && value['effect']!=3){
-            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
-            rows.cells[0].innerHTML+='('+value['punished_time']+')';
-        }
-        else if(value['effect']==0){
-            rows.className="Normal_background";
-        }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
         for(var i=3;i<15;i++){
@@ -81,6 +74,7 @@ ref_team.on('value',function(snapshot){
     {
         reduced_table.deleteRow(i);
     }
+    reduced_table = document.getElementById('score_table_reduced').getElementsByTagName("tbody")[0];
 	for(var row in dict){
 		var value = dict[row][1];
 		var reduced_rows = reduced_table.insertRow();
@@ -89,6 +83,50 @@ ref_team.on('value',function(snapshot){
 		reduced_rows.insertCell(2).innerHTML = value['sum'];
 	}
 });
+
+// show effect from group
+ref_skill = firebase.database().ref("skill");
+
+ref_skill.on('value',function(snapshot){
+    snapshot=snapshot.val();
+    var table = document.getElementById("score_table").getElementsByTagName('tbody')[0];
+    var row_length = table.rows.length;
+    setTimeout(function(){
+        for(var i = 0; i<row_length;i++){
+            var rows = table.rows[i];
+            var team_name=rows.cells[2].innerHTML;
+            // console.log(snapshot[team_name]['type'],parseInt(snapshot[team_name]['type']));
+            if(snapshot[team_name]['type'] && parseInt(snapshot[team_name]['type'])!=0 && parseInt(snapshot[team_name]['type'])!=3){
+                rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
+                if(parseInt(snapshot[team_name]['type'])===1){
+                    rows.className="Stun_background";
+                }
+            }
+            else{
+                rows.cells[0].innerHTML="";
+                rows.className="Normal_background";
+            }
+            //for reduced table
+            var reduce_table=document.getElementById("score_table_reduced").getElementsByTagName('tbody')[0];
+            rows = reduce_table.rows[i];
+            team_name=rows.cells[1].innerHTML;
+            // console.log(snapshot[team_name]['type'],parseInt(snapshot[team_name]['type']));
+            if(snapshot[team_name]['type'] && parseInt(snapshot[team_name]['type'])!=0 && parseInt(snapshot[team_name]['type'])!=3){
+                // rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
+                if(parseInt(snapshot[team_name]['type'])===1){
+                    rows.className="Stun_background";
+                }
+            }
+            else{
+                // rows.cells[0].innerHTML="";
+                rows.className="Normal_background";
+            }
+        }
+    },1000);
+    
+});
+
+
 
 //RGB channel function
 function rgb(r,g,b){
