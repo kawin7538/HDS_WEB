@@ -75,13 +75,39 @@ ref_team.on('value',function(snapshot){
         rows.insertCell(15).innerHTML=value['sum'];
     }
 	
-	//generating reduced table
+//	generating reduced table
+	var reduced_table = document.getElementById('score_table_reduced');
+	for(var i = reduced_table.rows.length - 1; i > 0; i--)
+    {
+        reduced_table.deleteRow(i);
+    }
 	for(var row in dict){
 		var value = dict[row][1];
-		var reduced_table = document.getElementById('score_table_reduced');
 		var reduced_rows = reduced_table.insertRow();
 		reduced_rows.insertCell(0).innerHTML = parseInt(row)+1;
 		reduced_rows.insertCell(1).innerHTML = value['name'];
 		reduced_rows.insertCell(2).innerHTML = value['sum'];
 	}
 });
+
+//RGB channel function
+function rgb(r,g,b){
+	var red = Math.floor(r);
+	var green = Math.floor(g);
+	var blue = Math.floor(b);
+	return ['rgb(',red,',',green,',',blue,')'].join('');
+}
+//change a color of timer
+
+//ref_timer.on('value',function(checker){
+//	var value = checker.val();
+//	var time_remain = 3600*value['hour']+60*value['min']+value['sec'];
+//	if (time_remain > 7200){
+//		$('#timer').style.color = rgb(0,255,0);
+//	}
+//	else{
+//		var red = 50/7200*255;
+//		var blue = 50/7200*255;
+//		$('#timer').style.color = rgb(red,255,blue);
+//	}
+//});
