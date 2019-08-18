@@ -56,6 +56,14 @@ body{
   -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
 }
 
+/* change color in row */
+.Shield_background{
+    background-color:blue;
+}
+.Normal_background{
+    background-color:None;
+}
+
 @media only screen and (max-width: 992px){
 	#notes{
 		font-size: 12px;

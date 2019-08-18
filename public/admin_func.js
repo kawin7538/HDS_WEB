@@ -56,6 +56,7 @@ ref_team.on('value',function(snapshot){
     {
         table.deleteRow(i);
     }
+    var table=document.getElementsByTagName('tbody')[0];
     var dict=snapshot.val();
     for(var key in dict){
         value=dict[key];
@@ -68,12 +69,19 @@ ref_team.on('value',function(snapshot){
     dict=sortProperties(dict);
     for(var row in dict){
         var value=dict[row][1];
-        var table=document.getElementById('score_table');
+        // var table=document.getElementById('score_table');
         var rows=table.insertRow();
-        rows.insertCell(0).innerHTML=value['effect'];
+        rows.insertCell(0).innerHTML="";
         if(value['punished_time']>0 && value['effect']!=0){
             // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
             rows.cells[0].innerHTML+='('+value['punished_time']+')';
+            if(value['effect']===3){
+                rows.className="Shield_background";
+                console.log('shield');
+            }
+        }
+        else if(value['effect']==0){
+            rows.className="Normal_background";
         }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
@@ -88,7 +96,7 @@ ref_team.on('value',function(snapshot){
         setTimeout(function(){
             for(var key in snap555){
                 if(snap555[key]['effect']!=0){
-                    if(snap555[key]['punished_time']<=0){
+                    if(snap555[key]['punished_time']<0){
                         ref_team.child(snap555[key]['name']).update({
                             effect:0
                         });
