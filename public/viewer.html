@@ -4,8 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>The Journey</title>
+        
 
-        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        
+		<!-- The core Firebase JS SDK is always required and must be listed first -->
         <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
 
         <!-- include only the Firebase features as you need -->
@@ -23,27 +25,26 @@
         <!-- Google Fonts: Bai Jamjuree -->
         <link href="https://fonts.googleapis.com/css?family=Bai+Jamjuree&display=swap" rel="stylesheet">
 
-        <script src="viewer_func.js"></script>
-
 		<link rel="stylesheet" href="viewer_design.css"></link>
-
-    </head>
+		
+		<script src="viewer_func.js"></script>
+	</head>
     <body class="disable-selection">
         <div id="title" class="row">
             <div class="col-lg-3" id="toppest">
                 <a href="https://hds.kmutt.space/62"><img id="logo" src="Assets/Logo.png" alt="HDS'62 Logo"></a>
             </div>
             <div class="col-lg-6" id = "displayTime">
-                <h1 style="font-weight: bold;" id="timer">XX:XX:XX</h1>
+                <h1 style="color:#00FF00" id="timer">XX:XX:XX</h1>
             </div>
-			<div class="col-lg-3" id = "notes">
+			<div class="col-lg-3" id = "notes" onclick="colorclick();">
 				<b>หมายเหตุ</b> ฐานแต่ละฐานจะเรียงตามเข็มนาฬิกา <br>โดยเริ่มจากทางด้านขวาของเวที
 			</div>
         </div><br>
         <table class="table" id="score_table" >
             <thead>
                 <tr>
-                    <th scope="col"></th>
+					<th scope="col"></th>
                     <th scope="col">RANK</th>
                     <th scope="col">NAME</th>
                     <th scope="col">1</th>
@@ -65,7 +66,6 @@
 		<table class="table" id="score_table_reduced" >
             <thead>
                 <tr>
-                    <th scope="col"></th>
                     <th scope="col">RANK</th>
                     <th scope="col">NAME</th>
                     <th scope="col">TOTAL</th>

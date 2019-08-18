@@ -29,7 +29,7 @@ body{
 	margin: 0.4vw;
 	text-align: center;
 	font-size: 8vw;
-	color: #00FF00;
+	font-weight: bold;
 }
 #notes{
 	position: relative;
