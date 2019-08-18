@@ -1,14 +1,17 @@
 body{
-    background-color: black;
+    background-image: url("Assets/Bg.jpg");
     font-family: "Bai Jamjuree", sans-serif;
     color: #FFF;
 	margin: 10px;
+	min-width: 300px;
 }
+
 #logo{
 	position: relative;
 	margin: 5% auto auto 5%;
-	width: 200px;
+	width: 170px;
 }
+
 #score_table{
 	color: #FFF;
 	font-size: 22px;
@@ -16,16 +19,22 @@ body{
 	text-align: center;
 	text-transform: uppercase;
 }
+
+#score_table_reduced{
+	display: none;
+}
+
 #timer{
 	position: relative;
 	margin: 0.4vw;
 	text-align: center;
 	font-size: 8vw;
+	color: #00FF00;
 }
 #notes{
 	position: relative;
 	font-size: 18px;
-	text-align: center;
+	text-align: left;
 	margin: auto;
 	
 }
@@ -50,8 +59,26 @@ body{
 @media only screen and (max-width: 992px){
 	#notes{
 		font-size: 12px;
+		text-align: center;
 	}
 	#timer{
 		font-size: 14vw;
+	}
+	#logo{
+		width: 100px;
+	}
+	#toppest{
+		margin: 0 0 20px 0;
+	}
+	#score_table{
+		display: none;
+	}
+	#score_table_reduced{
+		display: inline-table;
+		color: #FFF;
+		font-size: 22px;
+		line-height: 0.8em;
+		text-align: center;
+		text-transform: uppercase;
 	}
 } 

@@ -38,7 +38,9 @@ var ref_team=firebase.database().ref('team');
 
 ref_team.on('value',function(snapshot){
     var table=document.getElementById('score_table');
-    for(var i = table.rows.length - 1; i > 0; i--)
+    
+	//generating full table
+	for(var i = table.rows.length - 1; i > 0; i--)
     {
         table.deleteRow(i);
     }
@@ -56,16 +58,26 @@ ref_team.on('value',function(snapshot){
         var value=dict[row][1];
         var table=document.getElementById('score_table');
         var rows=table.insertRow();
-        rows.insertCell(0).innerHTML=value['effect'];
-        if(value['punished_time']>0 && value['effect']!=0){
-            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
-            rows.cells[0].innerHTML+='('+value['punished_time']+')';
+//        rows.insertCell(0).innerHTML=value['effect'];
+//        if(value['punished_time']>0 && value['effect']!=0){
+//            // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
+//            rows.cells[0].innerHTML+='('+value['punished_time']+')';
+//        }
+        rows.insertCell(0).innerHTML=parseInt(row)+1;
+        rows.insertCell(1).innerHTML=value['name'];
+        for(var i=2;i<14;i++){
+            rows.insertCell(i).innerHTML=value[i-1];
         }
-        rows.insertCell(1).innerHTML=parseInt(row)+1;
-        rows.insertCell(2).innerHTML=value['name'];
-        for(var i=3;i<15;i++){
-            rows.insertCell(i).innerHTML=value[i-2];
-        }
-        rows.insertCell(15).innerHTML=value['sum'];
+        rows.insertCell(14).innerHTML=value['sum'];
     }
+	
+	//generating reduced table
+	for(var row in dict){
+		var value = dict[row][1];
+		var reduced_table = document.getElementById('score_table_reduced');
+		var reduced_rows = reduced_table.insertRow();
+		reduced_rows.insertCell(0).innerHTML = parseInt(row)+1;
+		reduced_rows.insertCell(1).innerHTML = value['name'];
+		reduced_rows.insertCell(2).innerHTML = value['sum'];
+	}
 });
