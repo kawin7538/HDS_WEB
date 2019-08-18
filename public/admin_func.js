@@ -96,7 +96,7 @@ ref_team.on('value',function(snapshot){
         setTimeout(function(){
             for(var key in snap555){
                 if(snap555[key]['effect']!=0){
-                    if(snap555[key]['punished_time']<=0){
+                    if(snap555[key]['punished_time']<0){
                         ref_team.child(snap555[key]['name']).update({
                             effect:0
                         });

@@ -57,13 +57,10 @@ ref_team.on('value',function(snapshot){
         var value=dict[row][1];
         var table=document.getElementById('score_table');
         var rows=table.insertRow();
-        rows.insertCell(0).innerHTML=value['effect'];
-        if(value['punished_time']>0 && value['effect']!=0){
+        rows.insertCell(0).innerHTML="";
+        if(value['punished_time']>0 && value['effect']!=0 && value['effect']!=3){
             // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
             rows.cells[0].innerHTML+='('+value['punished_time']+')';
-            if(value['effect']===3){
-                rows.className="Shield_background";
-            }
         }
         else if(value['effect']==0){
             rows.className="Normal_background";
