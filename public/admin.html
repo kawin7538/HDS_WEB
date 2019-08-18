@@ -122,22 +122,45 @@
 
                 <!-- Shield: group & level -->
                 <div class="col">
-                        <h6>Shield</h6>
-                        Group:
-                        <select id = "Shield_group">
-                            <option value = "">Select Group</option>
-                        </select><br>
-                        Effect:
-                        <select id = "Shield_effect">
-                            <option value = "">Select Effect</option>
-                            <option value = "1">Level 1</option>
-                            <option value = "2">Level 2</option>
-                            <option value = "3">Level 3</option>
-                            <option value = "5">Level 4</option>
-                        </select><br>
-                        <button id = "Shield">Use</button>
-                        <button id = "ShieldUndo">Undo</button>
+                    <h6>Shield</h6>
+                    Group:
+                    <select id = "Shield_group">
+                        <option value = "">Select Group</option>
+                    </select><br>
+                    Effect:
+                    <select id = "Shield_effect">
+                        <option value = "">Select Effect</option>
+                        <option value = "1">Level 1</option>
+                        <option value = "2">Level 2</option>
+                        <option value = "3">Level 3</option>
+                        <option value = "5">Level 4</option>
+                    </select><br>
+                    <button id = "Shield">Use</button>
+                    <button id = "ShieldUndo">Undo</button>
+                </div>
+
+                <!-- This modal show after click destoy group and level  -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="Destroy_modal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Choose Level to Destroy</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <ul id="Destroy_level">
+
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" data-dismiss="modal">Close</button> -->
+                                <button type="button" id="Destroy_confirm">Destroy</button>
+                            </div>
+                        </div>
                     </div>
+                </div>
                 
                 <!-- Completed: group & quest -->
                 <div class="col">

@@ -6,6 +6,8 @@ $(function(){
     $("#timer_pause,#timer_stop").hide();
     $("#lvl1used,#lvl2used,#lvl3used,#lvl4used").hide();
     $("#stunUndo,#DestroyUndo,#ShieldUndo,#CompletedUndo").hide();
+    $("#Destroy_modal").hide();
+    $("#Destroy_confirm").prop('disabled',true);
     firebase.database().ref("timer").set({
         distance:distance
     });
@@ -63,22 +65,8 @@ ref_team.on('value',function(snapshot){
     dict=sortProperties(dict);
     for(var row in dict){
         var value=dict[row][1];
-        // var table=document.getElementById('score_table');
         var rows=table.insertRow();
         rows.insertCell(0).innerHTML="";
-        // if(value['punished_time']>0 && value['effect']!=0){
-        //     // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
-        //     rows.cells[0].innerHTML+='('+value['punished_time']+')';
-        //     if(value['effect']===3){
-        //         rows.className="Shield_background";
-        //     }
-        //     else if(value['effect']===1){
-        //         rows.className="Stun_background";
-        //     }
-        // }
-        // else if(value['effect']==0){
-        //     rows.className="Normal_background";
-        // }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
         for(var i=3;i<15;i++){
@@ -87,25 +75,6 @@ ref_team.on('value',function(snapshot){
         rows.insertCell(15).innerHTML=value['sum'];
         rows.insertCell(16).innerHTML="<button id=\'delete_"+value['name']+"\' onclick=\'delete_team(\""+value['name']+"\");\'>Delete</button>";
     }
-    // ref_team.once('value',function(snap555){
-    //     snap555=snap555.val();
-    //     setTimeout(function(){
-    //         for(var key in snap555){
-    //             if(snap555[key]['effect']!=0){
-    //                 if(snap555[key]['punished_time']<0){
-    //                     ref_team.child(snap555[key]['name']).update({
-    //                         effect:0
-    //                     });
-    //                 }
-    //                 else{
-    //                     ref_team.child(snap555[key]['name']).update({
-    //                         punished_time:snap555[key]['punished_time']-1
-    //                     });
-    //                 }
-    //             }
-    //         }
-    //     },1000);
-    // });
 });
 
 // show all names in dropdown
@@ -130,11 +99,15 @@ ref_skill.on('value',function(snapshot){
         for(var i = 0; i<row_length;i++){
             var rows = table.rows[i];
             team_name=rows.cells[2].innerHTML;
+            // console.log(table.rows[i].cells[2].innerHTML);
             // console.log(snapshot[team_name]['type'],parseInt(snapshot[team_name]['type']));
             if(snapshot[team_name]['type'] && parseInt(snapshot[team_name]['type'])!=0){
                 rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
                 if(snapshot[team_name]['type']===3){
                     rows.className="Shield_background";
+                }
+                else if(snapshot[team_name]['type']===2){
+                    rows.className="Destroy_background";
                 }
                 else if(snapshot[team_name]['type']===1){
                     rows.className="Stun_background";
@@ -344,6 +317,96 @@ $(function(){
         });
         setTimeout(function(){
             $("#stunUndo").hide();
+        },3000);
+    });
+});
+
+// function that send destroy to group, continue to level selection
+$(function(){
+    $("#Destroy").click(function(){
+        var team_name = $("#Destroy_group").val();
+        var count=$("#Destroy_effect").val();
+        //collect old data , for undo
+        var old_data={};
+        ref_team.once("value",function(snapshot){
+            snapshot=snapshot.val();
+            old_data=snapshot[team_name];
+        });
+        if(team_name && team_name!=="" && count && count!==""){
+            $("#Destroy_level").empty();
+            $("#Destroy_confirm").prop('disabled',true);
+            //check all completed mission
+            var sum=0;
+            for(var i = 1 ; i<=12;i++){
+                if(old_data[i]==1){
+                    sum+=1;
+                    var inputt="<li><input type='checkbox' name='Destroy_level_checkbox' value='"+i.toString()+"'>"+i.toString()+"</li>";
+                    $("#Destroy_level").append(inputt);
+                }
+            }
+            // if must destroy all level , disable form
+            if(sum<=count){
+                $("input[name='Destroy_level_checkbox']").prop('checked',true).prop('disabled',true);
+                $("#Destroy_confirm").prop('disabled',false);
+            }
+            //in the other case
+            else{
+                //check if you click less , equal or over from quota
+                $("input[name='Destroy_level_checkbox']").on('change', function (e) {
+                    if ($('input[type=checkbox]:checked').length > count) {
+                        $(this).prop('checked', false);
+                        alert("Over Quota Destroy");
+                    }
+                    else if($('input[type=checkbox]:checked').length == count){
+                        $("#Destroy_confirm").prop('disabled',false);
+                    }
+                    else{
+                        $("#Destroy_confirm").prop('disabled',true);
+                    }
+                });
+            }
+            $("#Destroy_modal").modal("show");
+        }
+    });
+});
+
+//function that comfirm destroy after choose level
+$(function(){
+    $("#Destroy_confirm").click(function(){
+        var team_name = $("#Destroy_group").val();
+        //collect old data , for undo
+        var old_data={};
+        ref_team.once("value",function(snapshot){
+            snapshot=snapshot.val();
+            old_data=snapshot[team_name];
+        });
+        var old_skill={};
+        ref_skill.once("value",function(snapshot){
+            snapshot=snapshot.val();
+            old_skill=snapshot[team_name];
+        });
+        // set all value that check to 0
+        var temp={};
+        $("input[name='Destroy_level_checkbox']:checked").each( function () {
+            // alert( $(this).val() );
+            temp[$(this).val()]=0;
+        });
+        ref_team.child(team_name).update(temp);
+        var temp={};
+        temp['type']=2;
+        temp['skill_time']=5;
+        firebase.database().ref('skill').child(team_name).update(temp);
+        $("#Destroy_group")[0].selectedIndex=0;
+        $("#Destroy_effect")[0].selectedIndex=0;
+        $("#Destroy_modal").modal('hide');
+        $("#DestroyUndo").show();
+        $("#DestroyUndo").click(function(){
+            ref_team.child(team_name).update(old_data);
+            ref_skill.child(team_name).update(old_skill);
+            // $("#DestroyUndo").hide();
+        });
+        setTimeout(function(){
+            $("#DestroyUndo").hide();
         },3000);
     });
 });
