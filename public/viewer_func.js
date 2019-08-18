@@ -42,6 +42,7 @@ ref_team.on('value',function(snapshot){
     {
         table.deleteRow(i);
     }
+    var table=document.getElementsByTagName('tbody')[0];
     var dict=snapshot.val();
     for(var key in dict){
         value=dict[key];
@@ -60,6 +61,12 @@ ref_team.on('value',function(snapshot){
         if(value['punished_time']>0 && value['effect']!=0){
             // rows.cells[0].innerHTML+='(<span class="punished_timer">'+value['punished_time']+'</span>)';
             rows.cells[0].innerHTML+='('+value['punished_time']+')';
+            if(value['effect']===3){
+                rows.className="Shield_background";
+            }
+        }
+        else if(value['effect']==0){
+            rows.className="Normal_background";
         }
         rows.insertCell(1).innerHTML=parseInt(row)+1;
         rows.insertCell(2).innerHTML=value['name'];
