@@ -91,48 +91,80 @@ ref_team_name.on('value',function(snapshot){
 // show effect from group
 ref_skill = firebase.database().ref("skill");
 
-ref_skill.on('value',function(snapshot){
-    snapshot=snapshot.val();
-    var table = document.getElementsByTagName('tbody')[0];
-    var row_length = table.rows.length;
-    setTimeout(function(){
-        for(var i = 0; i<row_length;i++){
-            var rows = table.rows[i];
-            team_name=rows.cells[2].innerHTML;
-            // console.log(table.rows[i].cells[2].innerHTML);
-            // console.log(snapshot[team_name]['type'],parseInt(snapshot[team_name]['type']));
-            if(snapshot[team_name]['type'] && parseInt(snapshot[team_name]['type'])!=0){
-                rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
-                if(snapshot[team_name]['type']===3){
-                    rows.className="Shield_background";
-                }
-                else if(snapshot[team_name]['type']===2){
-                    rows.className="Destroy_background";
-                }
-                else if(snapshot[team_name]['type']===1){
-                    rows.className="Stun_background";
-                }
-                if(parseInt(snapshot[team_name]['skill_time'])<=0){
-                    ref_skill.child(team_name).update({
-                        type: 0,
-                        skill_time: 0
-                    });
+function getSkillListener(){
+    return ref_skill.on('value',function(snapshot){
+        snapshot=snapshot.val();
+        var table = document.getElementsByTagName('tbody')[0];
+        var row_length = table.rows.length;
+        setTimeout(function(){
+            for(var i = 0; i<row_length;i++){
+                var rows = table.rows[i];
+                team_name=rows.cells[2].innerHTML;
+                // console.log(table.rows[i].cells[2].innerHTML);
+                // console.log(snapshot[team_name]['type'],parseInt(snapshot[team_name]['type']));
+                if(snapshot[team_name]['type'] && parseInt(snapshot[team_name]['type'])!=0){
+                    rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
+                    if(snapshot[team_name]['type']===3){
+                        rows.className="Shield_background";
+                    }
+                    else if(snapshot[team_name]['type']===2 && rows.className !="Stun_background"){
+                        rows.className="Destroy_background";
+                    }
+                    else if(snapshot[team_name]['type']===1){
+                        rows.className="Stun_background";
+                    }
+                    if(parseInt(snapshot[team_name]['skill_time'])<=0){
+                        ref_skill.child(team_name).update({
+                            type: 0,
+                            skill_time: 0
+                        });
+                    }
+                    else{
+                        ref_skill.child(team_name).update({
+                            skill_time:parseInt(snapshot[team_name]['skill_time'])-1
+                        });
+                    }
                 }
                 else{
-                    ref_skill.child(team_name).update({
-                        skill_time:parseInt(snapshot[team_name]['skill_time'])-1
-                    });
+                    rows.cells[0].innerHTML="";
+                    rows.className="Normal_background";
                 }
             }
-            else{
-                rows.cells[0].innerHTML="";
-                rows.className="Normal_background";
-            }
-        }
-    },1000);
-    
+        },1000);
+        
+    });
+}
+
+skillListener = getSkillListener();
+
+//function that show card remain
+ref_card = firebase.database().ref("card");
+
+ref_card.on('value',function(snapshot){
+    snapshot = snapshot.val();
+    // console.log(snapshot['1_max']-snapshot['1_used']);
+    document.getElementById("statusLvl1").innerHTML=snapshot['1_max']-snapshot['1_used'];
+    document.getElementById("statusLvl2").innerHTML=snapshot['2_max']-snapshot['2_used'];
+    document.getElementById("statusLvl3").innerHTML=snapshot['3_max']-snapshot['3_used'];
+    document.getElementById("statusLvl4").innerHTML=snapshot['4_max']-snapshot['4_used'];
 });
 
+//function that save card init
+$(function(){
+    $("#Card").click(function(){
+        var temp={};
+        temp['1_max']=parseInt($("#lvl1max").val() || 0);
+        temp['2_max']=parseInt($("#lvl2max").val() || 0);
+        temp['3_max']=parseInt($("#lvl3max").val() || 0);
+        temp['4_max']=parseInt($("#lvl4max").val() || 0);
+        temp['1_used']=0;
+        temp['2_used']=0;
+        temp['3_used']=0;
+        temp['4_used']=0;
+        ref_card.set(temp);
+        $("#lvl1max,lvl2max,lvl3max,lvl4max").empty();
+    });
+});
 
 // activate when press save button 
 function save_timer(){
@@ -272,12 +304,18 @@ $(function(){
         temp['type']=3;
         temp['skill_time']=parseInt(duration)*60;
         ref_skill.child(team_name).update(temp);
+        ref_skill.off('value');
+        setTimeout(function(){skillListener=getSkillListener();},1500);
+        // skillListener=getSkillListener();
         $("#Shield_group")[0].selectedIndex=0;
         $("#Shield_effect")[0].selectedIndex=0;
         //Show undo button, function it and hide in 3 seconds
         $("#ShieldUndo").show();
         $("#ShieldUndo").click(function(){
             ref_skill.child(team_name).update(old_data);
+            ref_skill.off('value');
+            setTimeout(function(){skillListener=getSkillListener();},1500);
+            $("#ShieldUndo");
             //Text after undo (To Be Continued)
         });
         setTimeout(function(){
@@ -304,6 +342,8 @@ $(function(){
             temp['skill_time']+=parseInt(stun_duration);
             temp['type']=1;
             ref_skill.child(team_name).update(temp);
+            ref_skill.off('value');
+            setTimeout(function(){skillListener=getSkillListener();},1500);
         }
         else{
             return ;
@@ -313,6 +353,8 @@ $(function(){
         $("#stunUndo").show();
         $("#stunUndo").click(function(){
             ref_skill.child(team_name).update(old_data);
+            ref_skill.off('value');
+            setTimeout(function(){skillListener=getSkillListener();},1500);
             $("#stunUndo").hide();
         });
         setTimeout(function(){
@@ -401,9 +443,11 @@ $(function(){
         });
         ref_team.child(team_name).update(temp);
         var temp={};
-        temp['type']=2;
-        temp['skill_time']=5;
-        firebase.database().ref('skill').child(team_name).update(temp);
+        if(old_skill['type']==0 && old_skill['skill_time']==0){ 
+            temp['type']=2;
+            temp['skill_time']=5;
+        }
+        ref_skill.child(team_name).update(temp);
         $("#Destroy_group")[0].selectedIndex=0;
         $("#Destroy_effect")[0].selectedIndex=0;
         $("#Destroy_modal").modal('hide');
@@ -411,7 +455,7 @@ $(function(){
         $("#DestroyUndo").click(function(){
             ref_team.child(team_name).update(old_data);
             ref_skill.child(team_name).update(old_skill);
-            // $("#DestroyUndo").hide();
+            $("#DestroyUndo").hide();
         });
         setTimeout(function(){
             $("#DestroyUndo").hide();
