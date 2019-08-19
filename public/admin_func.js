@@ -332,6 +332,14 @@ $(function(){
             snapshot=snapshot.val();
             old_data=snapshot[team_name];
         });
+        var old_skill={};
+        ref_skill.once("value",function(snapshot){
+            snapshot=snapshot.val();
+            old_skill=snapshot[team_name];
+        });
+        if(old_skill['type']===3){
+            return ;
+        }
         if(team_name && team_name!=="" && count && count!==""){
             $("#Destroy_level").empty();
             $("#Destroy_confirm").prop('disabled',true);

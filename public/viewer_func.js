@@ -101,6 +101,9 @@ ref_skill.on('value',function(snapshot){
                 if(parseInt(snapshot[team_name]['type'])===1){
                     rows.className="Stun_background";
                 }
+                else if(parseInt(snapshot[team_name]['type'])===2){
+                    rows.className="Destroy_background";
+                }
             }
             else{
                 rows.cells[0].innerHTML="";
@@ -115,6 +118,9 @@ ref_skill.on('value',function(snapshot){
                 // rows.cells[0].innerHTML=snapshot[team_name]['skill_time'];
                 if(parseInt(snapshot[team_name]['type'])===1){
                     rows.className="Stun_background";
+                }
+                else if(parseInt(snapshot[team_name]['type'])===2){
+                    rows.className="Destroy_background";
                 }
             }
             else{
