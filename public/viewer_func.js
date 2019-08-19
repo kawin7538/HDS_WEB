@@ -126,26 +126,26 @@ ref_skill.on('value',function(snapshot){
     
 });
 
-
-
 //RGB channel function
 function rgb(r,g,b){
-	var red = Math.floor(r);
-	var green = Math.floor(g);
-	var blue = Math.floor(b);
-	return ['rgb(',red,',',green,',',blue,')'].join('');
+	var red = zeroPad(Math.floor(r).toString(16),16);
+	var green = zeroPad(Math.floor(g).toString(16),16);
+	var blue = zeroPad(Math.floor(b).toString(16),16);
+	return ["#",red,green,blue].join('');
 }
-//change a color of timer
 
-//ref_timer.on('value',function(checker){
-//	var value = checker.val();
-//	var time_remain = 3600*value['hour']+60*value['min']+value['sec'];
-//	if (time_remain > 7200){
-//		$('#timer').style.color = rgb(0,255,0);
-//	}
-//	else{
-//		var red = 50/7200*255;
-//		var blue = 50/7200*255;
-//		$('#timer').style.color = rgb(red,255,blue);
-//	}
-//});
+//change a color of timer
+$(function(){
+ref_timer.on('value',function(checker){
+	var value = checker.val();
+	var time_remain = value['distance'];
+	if (time_remain > 7200){
+		$('#timer').css("color",rgb(0,255,0));
+	}
+	else{
+		var red = (1-time_remain/7200)*255;
+		var green = (time_remain/7200)*255;
+		$("#timer").css("color",rgb(red,green,0));
+	}
+});
+});
