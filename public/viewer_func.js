@@ -132,6 +132,23 @@ ref_skill.on('value',function(snapshot){
     
 });
 
+//function that show game status
+ref_game_status = firebase.database().ref("game_status");
+
+ref_game_status.on('value',function(snapshot){
+    snapshot=snapshot.val();
+    //snapshot will contain one of three words, pause, running and stop
+});
+
+//function that show card remain
+ref_card = firebase.database().ref("card");
+
+ref_card.on('value',function(snapshot){
+    snapshot = snapshot.val();
+    //It has 8 children e.g. 1_max, 1_used, 2_max, ... ,4_used in this snapshot
+
+});
+
 //RGB channel function
 function rgb(r,g,b){
 	var red = zeroPad(Math.floor(r).toString(16),16);
