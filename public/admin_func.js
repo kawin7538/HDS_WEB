@@ -173,7 +173,7 @@ $(function(){
         temp['3_used']=0;
         temp['4_used']=0;
         ref_card.set(temp);
-        $("#lvl1max,lvl2max,lvl3max,lvl4max").empty();
+        $("#lvl1max,#lvl2max,#lvl3max,#lvl4max").val("");
     });
 });
 
@@ -333,6 +333,17 @@ $(function(){
     $("#Shield").click(function(){
         var team_name=$("#Shield_group").val();
         var duration=$("#Shield_effect").val();
+        var card_level=$("#Shield_effect option:selected").index();
+        old_card_data={};
+        ref_card.once('value',function(snapshot){
+            old_card_data=snapshot.val();
+        });
+        if(old_card_data[card_level+'_max']==old_card_data[card_level+'_used']){
+            alert("Over quota of this level");
+            $("#Shield_group")[0].selectedIndex=0;
+            $("#Shield_effect")[0].selectedIndex=0;
+            return ;
+        }
         //Collect old data
         var old_data={};
         ref_skill.once('value',function(snap){
@@ -342,6 +353,9 @@ $(function(){
         var temp={};
         temp['type']=3;
         temp['skill_time']=parseInt(duration)*60;
+        var card_temp={};
+        card_temp[card_level+'_used']=old_card_data[card_level+'_used']+1
+        ref_card.update(card_temp);
         ref_skill.child(team_name).update(temp);
         ref_skill.off('value');
         setTimeout(function(){skillListener=getSkillListener();},1500);
@@ -351,6 +365,7 @@ $(function(){
         //Show undo button, function it and hide in 3 seconds
         $("#ShieldUndo").show();
         $("#ShieldUndo").click(function(){
+            ref_card.update(old_card_data);
             ref_skill.child(team_name).update(old_data);
             ref_skill.off('value');
             setTimeout(function(){skillListener=getSkillListener();},1500);
@@ -367,6 +382,20 @@ $(function(){
 $(function(){
     $("#stun").click(function(){
         var team_name=$("#Stun_group").val();
+        var card_level=$("#Stun_effect option:selected").index();
+        old_card_data={};
+        ref_card.once('value',function(snapshot){
+            old_card_data=snapshot.val();
+        });
+        if(old_card_data[card_level+'_max']==old_card_data[card_level+'_used']){
+            alert("Over quota of this level");
+            $("#Stun_group")[0].selectedIndex=0;
+            $("#Stun_effect")[0].selectedIndex=0;
+            return ;
+        }
+        var card_temp={};
+        card_temp[card_level+'_used']=old_card_data[card_level+'_used']+1;
+        ref_card.update(card_temp);
         var skill=0;
         var temp={};
         var old_data={};
@@ -376,6 +405,7 @@ $(function(){
             skill=parseInt(snapshot[team_name]['type']);
             temp['skill_time']=parseInt(snapshot[team_name]['skill_time']);
         });
+
         if(skill!==3){
             var stun_duration=$("#Stun_effect").val();
             temp['skill_time']+=parseInt(stun_duration);
@@ -385,12 +415,13 @@ $(function(){
             setTimeout(function(){skillListener=getSkillListener();},1500);
         }
         else{
-            return ;
+            // return ;
         }
         $("#Stun_group")[0].selectedIndex=0;
         $("#Stun_effect")[0].selectedIndex=0;
         $("#stunUndo").show();
         $("#stunUndo").click(function(){
+            ref_card.update(old_card_data);
             ref_skill.child(team_name).update(old_data);
             ref_skill.off('value');
             setTimeout(function(){skillListener=getSkillListener();},1500);
@@ -407,6 +438,17 @@ $(function(){
     $("#Destroy").click(function(){
         var team_name = $("#Destroy_group").val();
         var count=$("#Destroy_effect").val();
+        var card_level = $("#Destroy_effect option:selected").index();
+        old_card_data={};
+        ref_card.once('value',function(snapshot){
+            old_card_data=snapshot.val();
+        });
+        if(old_card_data[card_level+'_max']==old_card_data[card_level+'_used']){
+            alert("Over quota of this level");
+            $("#Stun_group")[0].selectedIndex=0;
+            $("#Stun_effect")[0].selectedIndex=0;
+            return ;
+        }
         //collect old data , for undo
         var old_data={};
         ref_team.once("value",function(snapshot){
@@ -463,6 +505,15 @@ $(function(){
 $(function(){
     $("#Destroy_confirm").click(function(){
         var team_name = $("#Destroy_group").val();
+        //Decrease card from level by 1
+        var card_level = $("#Destroy_effect option:selected").index();
+        var old_card_data={};
+        ref_card.once('value',function(snapshot){
+            old_card_data=snapshot.val();
+        });
+        var card_temp={};
+        card_temp[card_level+'_used']=old_card_data[card_level+'_used']+1;
+        ref_card.update(card_temp);
         //collect old data , for undo
         var old_data={};
         ref_team.once("value",function(snapshot){
@@ -482,18 +533,23 @@ $(function(){
         });
         ref_team.child(team_name).update(temp);
         var temp={};
-        if(old_skill['type']==0 && old_skill['skill_time']==0){ 
+        if(old_skill['type']==0){ 
             temp['type']=2;
             temp['skill_time']=5;
         }
         ref_skill.child(team_name).update(temp);
+        ref_skill.off('value');
+        setTimeout(function(){skillListener=getSkillListener();},1500);
         $("#Destroy_group")[0].selectedIndex=0;
         $("#Destroy_effect")[0].selectedIndex=0;
         $("#Destroy_modal").modal('hide');
         $("#DestroyUndo").show();
         $("#DestroyUndo").click(function(){
+            ref_card.update(old_card_data);
             ref_team.child(team_name).update(old_data);
             ref_skill.child(team_name).update(old_skill);
+            ref_skill.off('value');
+            setTimeout(function(){skillListener=getSkillListener();},1500);
             $("#DestroyUndo").hide();
         });
         setTimeout(function(){
