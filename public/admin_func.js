@@ -3,13 +3,16 @@ var distance = 2*3600;
 var pressed=false;
 // initial loading
 $(function(){
-    $("#timer_pause,#timer_stop").hide();
+    $("#timer_pause,#timer_stop,#timer_reset").hide();
     $("#lvl1used,#lvl2used,#lvl3used,#lvl4used").hide();
     $("#stunUndo,#DestroyUndo,#ShieldUndo,#CompletedUndo").hide();
     $("#Destroy_modal").hide();
     $("#Destroy_confirm").prop('disabled',true);
     firebase.database().ref("timer").set({
         distance:distance
+    });
+    firebase.database().ref("game_status").update({
+        game_status:"pause"
     });
 })
 // function that make 00, 05, 45
@@ -90,7 +93,7 @@ ref_team_name.on('value',function(snapshot){
 
 // show effect from group
 ref_skill = firebase.database().ref("skill");
-
+//function that get listener (because it must be insert, shutdown, delay and open again)
 function getSkillListener(){
     return ref_skill.on('value',function(snapshot){
         snapshot=snapshot.val();
@@ -134,8 +137,9 @@ function getSkillListener(){
         
     });
 }
-
+//variable that load latest listener
 skillListener = getSkillListener();
+ref_skill.off('value',skillListener);
 
 //function that show card remain
 ref_card = firebase.database().ref("card");
@@ -147,6 +151,13 @@ ref_card.on('value',function(snapshot){
     document.getElementById("statusLvl2").innerHTML=snapshot['2_max']-snapshot['2_used'];
     document.getElementById("statusLvl3").innerHTML=snapshot['3_max']-snapshot['3_used'];
     document.getElementById("statusLvl4").innerHTML=snapshot['4_max']-snapshot['4_used'];
+});
+
+//function that show game status
+ref_game_status = firebase.database().ref("game_status");
+
+ref_game_status.on('value',function(snapshot){
+    document.getElementById("game_status").innerHTML=snapshot.val()['game_status'];
 });
 
 //function that save card init
@@ -183,6 +194,10 @@ function save_timer(){
 // function that click Start , pause, stop 
 function timer_start(){
     pressed=true;
+    skillListener=getSkillListener();
+    firebase.database().ref("game_status").update({
+        game_status:"running"
+    });
     $("#timer_pause,#timer_stop").show();
     $("#timer_start").hide();
     var temp_distance=0;
@@ -194,37 +209,61 @@ function timer_start(){
         ref_timer.update({
             distance:temp_distance
         });
-        // hour=Math.floor(distance/3600);
-        // min=Math.floor((distance%3600)/60);
-        // sec=Math.floor(distance%60);
         document.getElementById('timer_pause').onclick = function(){
+            ref_skill.off('value',skillListener);
+            setTimeout(function(){},1001);
+            firebase.database().ref("game_status").update({
+                game_status:"pause"
+            });
             document.getElementById("timer_start").innerText="Resume";
             $("#timer_pause").hide();
             $("#timer_start").show();
             clearInterval(x);
         };
         document.getElementById("timer_stop").onclick = function(){
-            if(pressed){
-                temp_distance=0;
-                firebase.database().ref("timer").update({
-                    distance:temp_distance
-                });
-                clearInterval(x);
-                $("#timer_pause,#timer_stop").hide();
-                $("#timer_start").show();
-                document.getElementById("timer_start").innerText="Start";
-                alert("timer stop");
-            }
-        };
-        if(distance-1<0){
+            ref_skill.off("value",skillListener);
+            firebase.database().ref("game_status").update({
+                game_status:"stop"
+            });
+            temp_distance=0;
+            firebase.database().ref("timer").update({
+                distance:temp_distance
+            });
             clearInterval(x);
             $("#timer_pause,#timer_stop").hide();
-            $("#timer_start").show();
+            $("#timer_reset").show();
             document.getElementById("timer_start").innerText="Start";
-            alert("timer stop");
+            // alert("timer stop");
+        };
+        if(temp_distance<=0){
+            ref_skill.off("value",skillListener);
+            setTimeout(function(){},1001);
+            firebase.database().ref("game_status").update({
+                game_status:"stop"
+            });
+            clearInterval(x);
+            $("#timer_pause,#timer_stop").hide();
+            $("#timer_reset").show();
+            document.getElementById("timer_start").innerText="Start";
+            // alert("timer stop");
         }
     },1000);
 }
+
+//function that reset timer
+$(function(){
+    $("#timer_reset").click(function(){
+        ref_game_status.update({
+            game_status:"pause"
+        });
+        ref_timer.update({
+            distance:7200
+        });
+        $("#timer_reset").hide();
+        $("#timer_start").show();
+    });
+});
+
 // function activate when save new team 
 $(function(){
     $("#add_team_button").click(function(){

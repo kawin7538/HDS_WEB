@@ -30,7 +30,7 @@
 
             <!-- timer show session -->
             <div class="row">
-                <div class="col"><h1 id="timer">XX:XX:XX</h1></div>
+                <div class="col"><h1 id="timer">XX:XX:XX</h1><span id='game_status'>game status</span></div>
                 <div class="col">
                     <b>Card remaining</b><br>
                     <b>Level 1:</b> <span id="statusLvl1">XX</span>, <b>Level 2:</b> <span id="statusLvl2">XX</span><br>
@@ -53,6 +53,7 @@
                     <!-- Controller -->
                     <button id="timer_start" onclick="timer_start();">Start</button>
                     <button id="timer_pause" onclick="timer_pause();">Pause</button>
+                    <button id="timer_reset">Reset</button>
                     <button id="timer_stop">Stop</button> 
                 </div>
                 <!-- add user session  -->
