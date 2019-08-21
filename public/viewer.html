@@ -30,50 +30,60 @@
 		<script src="viewer_func.js"></script>
 	</head>
     <body class="disable-selection">
-        <div id="title" class="row">
-            <div class="col-lg-3" id="toppest">
-                <a href="https://hds.kmutt.space/62"><img id="logo" src="Assets/Logo.png" alt="HDS'62 Logo"></a>
-            </div>
-            <div class="col-lg-6" id = "displayTime">
-                <h1 style="color:#00FF00" id="timer">XX:XX:XX</h1>
-            </div>
+        <div id = "superstop">
+			<div id="stop">STOP</div>
+		</div>
+		<div class = "overlay" id = "superpause">
+			<div id="pause">PAUSE</div><br>
+			<center>
+				<h3>พักสายตาเถอะนะคนดี</h3><br>
+				<a class = "button" class="h3" href="https://hds.kmutt.ac.th/62">กลับไปหน้าเว็บ HDS'62</a>
+			</center>		
+		</div>
+		<div id="title" class="row">
+			<div class="col-lg-3" id="toppest">
+				<a href="https://hds.kmutt.space/62"><img id="logo" src="Assets/Logo.png" alt="HDS'62 Logo"></a>
+			</div>
+			<div class="col-lg-6" id = "displayTime">
+				<h1 style="color:#00FF00" id="timer">XX:XX:XX</h1>
+			</div>
 			<div class="col-lg-3" id = "notes" onclick="colorclick();">
 				<b>หมายเหตุ</b> ฐานแต่ละฐานจะเรียงตามเข็มนาฬิกา <br>โดยเริ่มจากทางด้านขวาของเวที
 			</div>
-        </div><br>
-        <table class="table" id="score_table" >
-            <thead>
-                <tr>
+		</div><br>
+		<table class="table" id="score_table" >
+			<thead>
+				<tr>
 					<th scope="col"></th>
-                    <th scope="col">RANK</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">1</th>
-                    <th scope="col">2</th>
-                    <th scope="col">3</th>
-                    <th scope="col">4</th>
-                    <th scope="col">5</th>
-                    <th scope="col">6</th>
-                    <th scope="col">7</th>
-                    <th scope="col">8</th>
-                    <th scope="col">9</th>
-                    <th scope="col">10</th>
-                    <th scope="col">11</th>
-                    <th scope="col">12</th>
-                    <th scope="col">TOTAL</th>
-                  </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+					<th scope="col">RANK</th>
+					<th scope="col">NAME</th>
+					<th scope="col">1</th>
+					<th scope="col">2</th>
+					<th scope="col">3</th>
+					<th scope="col">4</th>
+					<th scope="col">5</th>
+					<th scope="col">6</th>
+					<th scope="col">7</th>
+					<th scope="col">8</th>
+					<th scope="col">9</th>
+					<th scope="col">10</th>
+					<th scope="col">11</th>
+					<th scope="col">12</th>
+					<th scope="col">TOTAL</th>
+				  </tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 		<table class="table" id="score_table_reduced" >
-            <thead>
-                <tr>
-                    <th scope="col">RANK</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">TOTAL</th>
-                  </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+			<thead>
+				<tr>
+					<th scope="col">RANK</th>
+					<th scope="col">NAME</th>
+					<th scope="col">TOTAL</th>
+				  </tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 		<div id="footer">
 				© Copyright 2019, Kawin Chinpong & Kittapat Ratanaphupha - All Rights Reserved<br>
 				Using for HDS PCCMS freshmen <b>friendly</b> orientation camp '62 only,

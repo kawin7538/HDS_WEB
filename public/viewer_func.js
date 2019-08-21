@@ -27,9 +27,6 @@ var ref_timer=firebase.database().ref("timer");
 ref_timer.on('value',function(snapshot){
     // console.log(snapshot.val());
     var value=snapshot.val();
-    if(value['distance']-1<0 ){
-        alert("timer_stop");
-    }
     document.getElementById("timer").innerText=zeroPad(Math.floor(value['distance']/3600),10)+" : "+zeroPad(Math.floor((value['distance']%3600)/60),10)+" : "+zeroPad(Math.floor(value['distance']%60),10);
 });
 
@@ -133,15 +130,71 @@ ref_skill.on('value',function(snapshot){
 });
 
 //function that show game status
-ref_game_status = firebase.database().ref("game_status");
+var ref_game_status = firebase.database().ref("game_status");
 
 ref_game_status.on('value',function(snapshot){
-    snapshot=snapshot.val();
+    var value = snapshot.val();
+	var opacity = parseFloat($('#superpause').css('opacity'),10);
+	var opacityS = parseFloat($('#superstop').css('opacity'),10);
+		
     //snapshot will contain one of three words, pause, running and stop
+	if(value['game_status']=='pause'){
+		var fucku = setInterval(pause, 1);
+		var properly = ($('#superstop').css('opacity') == 0);
+		function pause(){
+			if (opacity.toFixed(2) == 1){
+				clearInterval(fucku);
+			}
+			else if (properly){
+				opacity += 0.02;
+				$('#superpause').css('opacity',opacity);
+			}
+			else{
+				opacity += 0.02;
+				opacityS -= 0.02;
+				$('#superpause').css('opacity',opacity);
+				$('#superstop').css('opacity',opacityS);
+			}
+		}
+	}
+	else if(value['game_status']=='running'){
+		var fuckuu = setInterval(play, 1);
+		function play(){
+			if (opacity.toFixed(2) == 0){
+				clearInterval(fucku);
+				console.log(opacity);
+			}
+			else{
+				opacity -= 0.02;
+				$('#superpause').css('opacity',opacity);
+			}
+		}
+	}
+	else if(value['game_status']=='stop'){
+		var theend = setInterval(stop, 1);
+		var yes = ($('#superpause').css('opacity') == 0);
+		play();
+		function stop(){
+			if (opacityS.toFixed(2) == 1){
+				clearInterval(theend);
+				console.log(opacityS);
+			}
+			else if (yes){
+				opacityS += 0.02;
+				$('#superstop').css('opacity',opacityS);
+			}
+			else {
+				opacityS += 0.02;
+				opacity -= 0.02;
+				$('#superpause').css('opacity',opacity);
+				$('#superstop').css('opacity',opacityS);
+			}
+		}
+	}
 });
 
 //function that show card remain
-ref_card = firebase.database().ref("card");
+var ref_card = firebase.database().ref("card");
 
 ref_card.on('value',function(snapshot){
     snapshot = snapshot.val();
@@ -157,18 +210,54 @@ function rgb(r,g,b){
 	return ["#",red,green,blue].join('');
 }
 
+function rgbChannel(channel, jquery){
+	var jqueries = jquery + '';
+	var code = jqueries.split(/[( ,)]/);
+	var number = code.filter(function (element){return (element != "" && element != "rgb");});
+	if (channel == 'red'){return number[0];}
+	else if (channel == 'green'){return number[1];}
+	else if (channel == 'blue'){return number[2];}
+}
+
 //change a color of timer
 $(function(){
-ref_timer.on('value',function(checker){
-	var value = checker.val();
-	var time_remain = value['distance'];
-	if (time_remain > 7200){
-		$('#timer').css("color",rgb(0,255,0));
-	}
-	else{
-		var red = (1-time_remain/7200)*255;
-		var green = (time_remain/7200)*255;
-		$("#timer").css("color",rgb(red,green,0));
-	}
-});
+	ref_timer.on('value',function(checker){
+		var fuck = 0;
+		var token = 0;
+		var value = checker.val();
+		var time_remain = value['distance'];
+		
+		if (time_remain > 7200){
+			$('#timer').css("color",rgb(0,255,0));
+		}
+		else if (time_remain < 10 && time_remain != 0){
+			fuck = setInterval(fade, 9);
+			var value = parseInt(rgbChannel('green',$('#timer').css('color')),10);
+			function fade(){
+				if (token == 0 && value < 255){
+					value += 5;
+					$('#timer').css('color',rgb(255,value,value));
+				}
+				else if (token == 0 && value == 255){
+					token++;
+					value -= 5;
+				}
+				else if (token == 1 && value > 0){
+					value -= 5;
+					$('#timer').css('color',rgb(255,value,value));
+				}
+				else{
+					clearInterval(fuck);
+				}
+			}
+		}
+		else if (time_remain == 0){
+			$('#timer').css('color',rgb(255,0,0));
+		}
+		else{
+			var red = (1-(time_remain-10)/7190)*255;
+			var green = ((time_remain-10)/7190)*255;
+			$("#timer").css("color",rgb(red,green,0));
+		}
+	});
 });
