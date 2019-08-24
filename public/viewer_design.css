@@ -14,11 +14,14 @@ body{
 	border-style: solid;
 	border-color: #152E8E;
 	padding: 15px 32px;
+	border-radius: 10px;
 }
 
 .button:hover{
 	border: none;
 	background-color: #E77014;
+	color: #ffffff;
+	text-decoration: none;
 }
 
 /*Overlay layer*/
@@ -30,18 +33,24 @@ body{
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(0,0,0,0.8);
-	z-index: 2;
+	z-index: 3;
 }
 
-#superpause, #superstop{
+#superpause{
 	opacity: 0;
+	background-color: rgba(0,0,0,0.8);
 }
 
-#pause{
+#superstop{
+	opacity: 0;
+	background-color: #9B1E20;
+}
+
+#pause, #stop{
 	font-size: 15vw;
 	margin-top: 5%;
 	text-align: center;
+	line-height: 100%;
 }
 
 /*main*/
@@ -79,6 +88,50 @@ body{
 	margin: auto;
 	
 }
+/*card personalization*/
+#card1, #card2, #card3, #card4{
+	position: fixed;
+	width: 310px;
+	bottom: -15%;
+}
+#card1{
+	left: 2%;
+}
+#card2{
+	left: 27%;
+}
+#card3{
+	left: 52%;
+}
+#card4{
+	left: 77%;
+}
+/*ribbon*/
+#lvl1, #lvl2, #lvl3, #lvl4{
+	position: fixed;
+	z-index: 2;
+}
+#lvl1{
+	width: 300px;
+	left: 2.3%;
+	bottom: -130px;
+}
+#lvl2{
+	width: 310px;
+	left: 27%;
+	bottom: -130px;
+}
+#lvl3{
+	width: 266px;
+	left: 53.8%;
+	bottom: -134px;
+}
+#lvl4{
+	width: 285px;
+	left: 78.4%;
+	bottom: -130px;
+}
+
 #footer{
 	color: #9F9F9F;
 	position: fixed;
@@ -88,7 +141,9 @@ body{
 	padding: 15px;
 	background-color: #272727;
 	font-size: 12px;
+	z-index: 4;
 }
+
 .disable-selection {
      -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* Internet Explorer */
@@ -136,8 +191,13 @@ body{
 		text-align: center;
 		text-transform: uppercase;
 	}
-	#pause{
-		font-size: 30vw;
-		margin-top: 50%;
+	#pause, #stop{
+		font-size: 20vw;
+	}
+	@media only screen and (max-width: 768px){
+		#pause, #stop{
+			font-size: 25vw;
+			margin-top: 30%;
+		}
 	}
 } 
