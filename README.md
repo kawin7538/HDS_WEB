@@ -8,6 +8,7 @@
 ## Preview
 ### Display page to the players
 For each status to display in the page, it depends on admin's commands.
+
 ![play](https://github.com/kawin7538/HDS_WEB/blob/master/Play.jpg)
 ![pause](https://github.com/kawin7538/HDS_WEB/blob/master/Pause.jpg)
 ![times up](https://github.com/kawin7538/HDS_WEB/blob/master/times%20up.jpg)
